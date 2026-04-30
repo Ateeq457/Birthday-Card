@@ -1,0 +1,60 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: 'Quicksand', 'Segoe UI', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes glitch {
+  0% { text-shadow: -2px 0 red, 2px 0 blue; }
+  25% { text-shadow: 2px 0 red, -2px 0 blue; }
+  50% { text-shadow: -2px 0 red, 2px 0 blue; }
+  75% { text-shadow: 2px 0 red, -2px 0 blue; }
+  100% { text-shadow: -2px 0 red, 2px 0 blue; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(255,158,207,0.5)); }
+  50% { filter: drop-shadow(0 0 20px rgba(255,158,207,0.8)); }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 158, 207, 0.3);
+  border-radius: 32px;
+}
+
+.gradient-button {
+  background: linear-gradient(135deg, #ff9ecf, #b388ff);
+  transition: all 0.3s ease;
+}
+
+.gradient-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 158, 207, 0.6);
+}
+
+.gradient-button:active {
+  transform: scale(0.95);
+}
