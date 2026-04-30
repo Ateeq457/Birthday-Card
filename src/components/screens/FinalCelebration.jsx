@@ -14,8 +14,8 @@ const useAdvancedConfetti = () => {
     const shapes = ['circle', 'heart', 'star'];
     const colors = ['#ff9ecf', '#ffc2e2', '#b388ff', '#7b61ff', '#ffd700', '#ffffff'];
     return {
-      x: x || Math.random() * window.innerWidth,
-      y: y || -10,
+      x: x !== undefined ? x : Math.random() * window.innerWidth,
+      y: y !== undefined ? y : -10,
       vx: (Math.random() - 0.5) * (isExplosion ? 8 : 3),
       vy: Math.random() * (isExplosion ? 12 : 5) + (isExplosion ? 5 : 2),
       gravity: 0.2,
@@ -32,7 +32,7 @@ const useAdvancedConfetti = () => {
   const triggerExplosion = useCallback(() => {
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 3;
-    const explosionCount = 60;
+    const explosionCount = window.innerWidth < 600 ? 40 : 60;
     for (let i = 0; i < explosionCount; i++) {
       particlesRef.current.push(createParticle(centerX, centerY, true));
     }
@@ -82,12 +82,10 @@ const useAdvancedConfetti = () => {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Continuous rain of confetti
-    if (Math.random() < 0.3) {
+    if (Math.random() < (window.innerWidth < 600 ? 0.2 : 0.3)) {
       particlesRef.current.push(createParticle());
     }
     
-    // Regular explosions
     if (Date.now() - lastExplosionRef.current > 2000) {
       triggerExplosion();
     }
@@ -124,7 +122,6 @@ const useAdvancedConfetti = () => {
   
   useEffect(() => {
     animate();
-    // Trigger initial explosions
     const initialExplosions = setInterval(() => triggerExplosion(), 500);
     setTimeout(() => clearInterval(initialExplosions), 3000);
     
@@ -147,17 +144,18 @@ const useAdvancedConfetti = () => {
 };
 
 // ============================================
-// FLOATING PARTICLES SYSTEM
+// FLOATING PARTICLES SYSTEM (MOBILE OPTIMIZED)
 // ============================================
 const FloatingElements = () => {
   const elements = [];
   const items = ['🎈', '🎂', '🎁', '💜', '✨', '⭐', '🌸', '🦄'];
+  const count = typeof window !== 'undefined' && window.innerWidth < 600 ? 25 : 40;
   
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < count; i++) {
     const delay = Math.random() * 5;
     const duration = 8 + Math.random() * 7;
     const startX = Math.random() * 100;
-    const size = 1 + Math.random();
+    const size = 0.8 + Math.random() * 0.8;
     elements.push(
       <motion.div
         key={i}
@@ -167,7 +165,7 @@ const FloatingElements = () => {
           opacity: [0, 1, 1, 0],
           scale: [0, size, size, 0],
           rotate: [0, 360, 720],
-          x: [`${startX}vw`, `${startX + (Math.random() - 0.5) * 30}vw`]
+          x: [`${startX}vw`, `${startX + (Math.random() - 0.5) * 25}vw`]
         }}
         transition={{
           duration: duration,
@@ -177,10 +175,10 @@ const FloatingElements = () => {
         }}
         style={{
           position: 'absolute',
-          fontSize: `${24 + Math.random() * 20}px`,
+          fontSize: `clamp(18px, ${20 + Math.random() * 18}px, 40px)`,
           pointerEvents: 'none',
           zIndex: 10,
-          filter: 'drop-shadow(0 0 10px rgba(255,158,207,0.6))'
+          filter: 'drop-shadow(0 0 8px rgba(255,158,207,0.6))'
         }}
       >
         {items[Math.floor(Math.random() * items.length)]}
@@ -195,14 +193,15 @@ const FloatingElements = () => {
 // ============================================
 const StarBackground = () => {
   const stars = [];
-  for (let i = 0; i < 100; i++) {
+  const starCount = typeof window !== 'undefined' && window.innerWidth < 600 ? 60 : 100;
+  for (let i = 0; i < starCount; i++) {
     stars.push(
       <motion.div
         key={i}
         initial={{ opacity: 0.2, scale: 0 }}
         animate={{
           opacity: [0.2, 1, 0.2],
-          scale: [0.5, 1.5, 0.5]
+          scale: [0.5, 1.2, 0.5]
         }}
         transition={{
           duration: 2 + Math.random() * 3,
@@ -217,7 +216,7 @@ const StarBackground = () => {
           height: `${2 + Math.random() * 4}px`,
           background: `radial-gradient(circle, #fff, ${['#ff9ecf', '#b388ff', '#ffd700'][Math.floor(Math.random() * 3)]})`,
           borderRadius: '50%',
-          boxShadow: '0 0 10px rgba(255,255,255,0.8)'
+          boxShadow: '0 0 8px rgba(255,255,255,0.8)'
         }}
       />
     );
@@ -268,7 +267,7 @@ const DriftingClouds = () => {
 };
 
 // ============================================
-// ANIMATED BIRTHDAY CAKE
+// ANIMATED BIRTHDAY CAKE (MOBILE ADJUSTED)
 // ============================================
 const AnimatedCake = () => {
   const [candlesLit, setCandlesLit] = useState([true, true, true]);
@@ -282,27 +281,27 @@ const AnimatedCake = () => {
   
   return (
     <motion.div
-      animate={{ y: [0, -10, 0], rotateZ: [-1, 1, -1] }}
+      animate={{ y: [0, -8, 0], rotateZ: [-1, 1, -1] }}
       transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       style={{
         position: 'absolute',
-        bottom: '15%',
-        left: '15%',
+        bottom: '10%',
+        left: '5%',
         zIndex: 15,
         filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.3))',
         cursor: 'pointer'
       }}
-      whileHover={{ scale: 1.1 }}
+      whileHover={{ scale: 1.05 }}
     >
-      <div style={{ position: 'relative', fontSize: '120px' }}>
+      <div style={{ position: 'relative', fontSize: 'clamp(70px, 15vw, 120px)' }}>
         🎂
-        <div style={{ position: 'absolute', top: '-30px', left: '30px', display: 'flex', gap: '20px' }}>
+        <div style={{ position: 'absolute', top: '-25px', left: 'clamp(15px, 4vw, 30px)', display: 'flex', gap: 'clamp(10px, 3vw, 20px)' }}>
           {candlesLit.map((lit, i) => (
             <motion.div
               key={i}
               animate={{ scaleY: [1, 1.2, 1] }}
               transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.2 }}
-              style={{ fontSize: '30px' }}
+              style={{ fontSize: 'clamp(18px, 4vw, 30px)' }}
             >
               {lit ? '🕯️' : '💨'}
             </motion.div>
@@ -312,7 +311,7 @@ const AnimatedCake = () => {
       <motion.div
         animate={{ scale: [1, 1.1, 1], opacity: [0, 1, 0] }}
         transition={{ duration: 0.5, repeat: Infinity }}
-        style={{ position: 'absolute', top: '-50px', left: '60px', fontSize: '40px' }}
+        style={{ position: 'absolute', top: '-40px', left: 'clamp(35px, 8vw, 60px)', fontSize: 'clamp(25px, 5vw, 40px)' }}
       >
         ✨
       </motion.div>
@@ -321,7 +320,141 @@ const AnimatedCake = () => {
 };
 
 // ============================================
-// MAIN CELEBRATION COMPONENT
+// FLOATING GIFT BOXES
+// ============================================
+const FloatingGiftBoxes = () => {
+  const [openedGifts, setOpenedGifts] = useState({});
+  const gifts = [
+    { id: 1, x: '80%', y: '15%', delay: 0 },
+    { id: 2, x: '8%', y: '65%', delay: 2 },
+    { id: 3, x: '85%', y: '75%', delay: 4 }
+  ];
+  
+  const openGift = (id) => {
+    setOpenedGifts(prev => ({ ...prev, [id]: true }));
+  };
+  
+  return (
+    <>
+      {gifts.map(gift => (
+        <motion.div
+          key={gift.id}
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ delay: gift.delay, type: 'spring' }}
+          style={{
+            position: 'absolute',
+            left: gift.x,
+            top: gift.y,
+            cursor: 'pointer',
+            zIndex: 15,
+            fontSize: 'clamp(40px, 8vw, 55px)'
+          }}
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => openGift(gift.id)}
+        >
+          {!openedGifts[gift.id] ? '🎁' : (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring' }}
+            >
+              🎀✨
+            </motion.div>
+          )}
+        </motion.div>
+      ))}
+    </>
+  );
+};
+
+// ============================================
+// PARALLAX LIGHTS (TOUCH FRIENDLY)
+// ============================================
+const ParallaxLights = () => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  
+  useEffect(() => {
+    const handleMove = (e) => {
+      const clientX = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
+      const clientY = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
+      setMousePos({ x: clientX / window.innerWidth, y: clientY / window.innerHeight });
+    };
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('touchmove', handleMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('touchmove', handleMove);
+    };
+  }, []);
+  
+  const lightCount = typeof window !== 'undefined' && window.innerWidth < 600 ? 5 : 8;
+  
+  return (
+    <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden', pointerEvents: 'none', zIndex: 5 }}>
+      {[...Array(lightCount)].map((_, i) => (
+        <motion.div
+          key={i}
+          animate={{
+            x: mousePos.x * 40 * (i + 1) * -1,
+            y: mousePos.y * 25 * (i + 1) * -1
+          }}
+          transition={{ type: 'spring', stiffness: 50 }}
+          style={{
+            position: 'absolute',
+            left: `${10 + i * 12}%`,
+            top: `${20 + i * 8}%`,
+            width: 'clamp(80px, 15vw, 150px)',
+            height: 'clamp(80px, 15vw, 150px)',
+            background: `radial-gradient(circle, rgba(255,158,207,0.15), rgba(179,136,255,0.05))`,
+            borderRadius: '50%',
+            filter: 'blur(40px)'
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// ============================================
+// FLOATING HEART LINE
+// ============================================
+const FloatingHeartLine = () => {
+  const hearts = [];
+  const heartCount = typeof window !== 'undefined' && window.innerWidth < 600 ? 12 : 20;
+  for (let i = 0; i < heartCount; i++) {
+    hearts.push(
+      <motion.div
+        key={i}
+        initial={{ x: `${(i % 10) * 10}%`, y: '100vh', opacity: 0 }}
+        animate={{
+          y: '-20vh',
+          opacity: [0, 1, 1, 0],
+          x: [`${(i % 10) * 10}%`, `${(i % 10) * 10 + (Math.random() - 0.5) * 20}%`]
+        }}
+        transition={{
+          duration: 5 + Math.random() * 3,
+          delay: i * 0.25,
+          repeat: Infinity,
+          ease: 'easeOut'
+        }}
+        style={{
+          position: 'absolute',
+          fontSize: 'clamp(18px, 5vw, 26px)',
+          pointerEvents: 'none',
+          zIndex: 12
+        }}
+      >
+        {['❤️', '💜', '💖', '💗', '💓'][i % 5]}
+      </motion.div>
+    );
+  }
+  return <>{hearts}</>;
+};
+
+// ============================================
+// MAIN CELEBRATION COMPONENT (FULLY RESPONSIVE)
 // ============================================
 const FinalCelebration = ({ onReplay }) => {
   const { canvasRef, triggerExplosion } = useAdvancedConfetti();
@@ -343,7 +476,7 @@ const FinalCelebration = ({ onReplay }) => {
           setTimeout(() => setShowButton(true), 800);
         }, 500);
       }
-    }, 150);
+    }, 130);
     return () => clearInterval(interval);
   }, []);
   
@@ -415,7 +548,7 @@ const FinalCelebration = ({ onReplay }) => {
       {/* Floating hearts line */}
       <FloatingHeartLine />
       
-      {/* Main Card */}
+      {/* Main Card - FULLY RESPONSIVE */}
       <motion.div
         initial={{ scale: 0.2, opacity: 0, rotateY: -180 }}
         animate={{ scale: 1, opacity: 1, rotateY: 0 }}
@@ -423,7 +556,7 @@ const FinalCelebration = ({ onReplay }) => {
           type: 'spring',
           damping: 12,
           stiffness: 100,
-          duration: 1.2
+          duration: 1.0
         }}
         style={{
           position: 'relative',
@@ -432,12 +565,12 @@ const FinalCelebration = ({ onReplay }) => {
           justifyContent: 'center',
           alignItems: 'center',
           minHeight: '100vh',
-          padding: '2rem'
+          padding: 'clamp(1rem, 5vw, 2rem)'
         }}
       >
         <motion.div
           animate={{
-            y: [0, -15, 0],
+            y: [0, -12, 0],
             boxShadow: [
               '0 30px 60px rgba(0,0,0,0.3)',
               '0 40px 80px rgba(255,158,207,0.5)',
@@ -452,10 +585,10 @@ const FinalCelebration = ({ onReplay }) => {
           style={{
             background: 'rgba(255, 255, 255, 0.15)',
             backdropFilter: 'blur(25px) saturate(180%)',
-            borderRadius: '72px',
-            padding: '3rem 4rem',
+            borderRadius: 'clamp(40px, 10vw, 72px)',
+            padding: 'clamp(1.5rem, 5vw, 3rem) clamp(1.5rem, 6vw, 4rem)',
             maxWidth: '90%',
-            width: '650px',
+            width: 'min(620px, 85vw)',
             textAlign: 'center',
             border: '2px solid rgba(255, 255, 255, 0.4)',
             boxShadow: '0 30px 60px rgba(0,0,0,0.3)',
@@ -465,14 +598,8 @@ const FinalCelebration = ({ onReplay }) => {
         >
           {/* Animated border gradient */}
           <motion.div
-            animate={{
-              rotate: 360
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: 'linear'
-            }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
             style={{
               position: 'absolute',
               top: -2,
@@ -480,7 +607,7 @@ const FinalCelebration = ({ onReplay }) => {
               right: -2,
               bottom: -2,
               background: 'linear-gradient(90deg, #ff9ecf, #b388ff, #ffd700, #ff9ecf)',
-              borderRadius: '72px',
+              borderRadius: 'clamp(40px, 10vw, 72px)',
               zIndex: -1,
               opacity: 0.5
             }}
@@ -488,27 +615,21 @@ const FinalCelebration = ({ onReplay }) => {
           
           {/* Light reflection effect */}
           <motion.div
-            animate={{
-              x: ['-100%', '200%']
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: 'linear'
-            }}
+            animate={{ x: ['-100%', '200%'] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
             style={{
               position: 'absolute',
               top: 0,
               left: 0,
               width: '100%',
               height: '100%',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
               transform: 'skewX(-20deg)',
               pointerEvents: 'none'
             }}
           />
           
-          {/* Main title with typewriter effect */}
+          {/* Main title with typewriter effect - FULLY RESPONSIVE */}
           <motion.h1
             animate={{
               textShadow: [
@@ -517,24 +638,24 @@ const FinalCelebration = ({ onReplay }) => {
                 '0 0 20px #ff9ecf'
               ]
             }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity
-            }}
+            transition={{ duration: 1.5, repeat: Infinity }}
             style={{
-              fontSize: 'clamp(2rem, 8vw, 4rem)',
+              fontSize: 'clamp(1.8rem, 7vw, 4rem)',
               fontWeight: 'bold',
               color: '#fff',
-              marginBottom: '1rem',
+              marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
               fontFamily: "'Poppins', 'Quicksand', sans-serif",
-              letterSpacing: '2px'
+              letterSpacing: '1px',
+              wordBreak: 'break-word',
+              whiteSpace: 'normal',
+              lineHeight: 1.2
             }}
           >
             {typewriterText}
             <motion.span
               animate={{ opacity: [0, 1, 0] }}
               transition={{ duration: 0.8, repeat: Infinity }}
-              style={{ display: 'inline-block', width: '4px', height: '1em', background: 'white', marginLeft: '4px' }}
+              style={{ display: 'inline-block', width: '3px', height: '1em', background: 'white', marginLeft: '4px' }}
             />
           </motion.h1>
           
@@ -551,10 +672,12 @@ const FinalCelebration = ({ onReplay }) => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
                   style={{
-                    fontSize: 'clamp(1rem, 4vw, 1.5rem)',
+                    fontSize: 'clamp(0.9rem, 4vw, 1.5rem)',
                     color: '#ffd700',
-                    marginBottom: '0.5rem',
-                    fontWeight: '500'
+                    marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)',
+                    fontWeight: '500',
+                    wordBreak: 'break-word',
+                    padding: '0 0.5rem'
                   }}
                 >
                   ✨ Stay amazing. Stay real. ✨
@@ -564,9 +687,11 @@ const FinalCelebration = ({ onReplay }) => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
                   style={{
-                    fontSize: 'clamp(0.9rem, 3.5vw, 1.2rem)',
-                    color: 'rgba(255,255,255,0.9)',
-                    marginBottom: '2rem'
+                    fontSize: 'clamp(0.85rem, 3.5vw, 1.2rem)',
+                    color: 'rgba(255,255,255,0.95)',
+                    marginBottom: 'clamp(1.5rem, 5vw, 2rem)',
+                    padding: '0 0.5rem',
+                    lineHeight: 1.4
                   }}
                 >
                   You made it through the magical journey! 🎉
@@ -585,11 +710,8 @@ const FinalCelebration = ({ onReplay }) => {
                 style={{ position: 'relative', display: 'inline-block' }}
               >
                 <motion.button
-                  whileHover={{
-                    scale: 1.1,
-                    boxShadow: '0 0 30px rgba(123,97,255,0.8)'
-                  }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(123,97,255,0.8)' }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => {
                     triggerExplosion();
                     setTimeout(() => onReplay(), 300);
@@ -597,28 +719,27 @@ const FinalCelebration = ({ onReplay }) => {
                   style={{
                     background: 'linear-gradient(135deg, #7b61ff, #ff9ecf, #ffd700)',
                     border: 'none',
-                    padding: '16px 48px',
+                    padding: 'clamp(12px, 4vw, 16px) clamp(24px, 8vw, 48px)',
                     borderRadius: '60px',
                     color: 'white',
-                    fontSize: '1.3rem',
+                    fontSize: 'clamp(0.9rem, 4vw, 1.3rem)',
                     fontWeight: 'bold',
                     cursor: 'pointer',
                     position: 'relative',
                     overflow: 'hidden',
                     transition: 'all 0.3s ease',
-                    fontFamily: 'inherit'
+                    fontFamily: 'inherit',
+                    boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   ⟳ Relive the Magic
                   <motion.div
                     animate={{
                       scale: [1, 1.2, 1],
-                      opacity: [0.5, 0.8, 0.5]
+                      opacity: [0.4, 0.8, 0.4]
                     }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity
-                    }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
                     style={{
                       position: 'absolute',
                       top: 0,
@@ -630,178 +751,13 @@ const FinalCelebration = ({ onReplay }) => {
                     }}
                   />
                 </motion.button>
-                {/* Ripple effect on click */}
-                <motion.div
-                  animate={{
-                    scale: [1, 1.5, 2],
-                    opacity: [0.5, 0.2, 0]
-                  }}
-                  transition={{ duration: 0.5 }}
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    width: '100%',
-                    height: '100%',
-                    background: 'radial-gradient(circle, #ff9ecf, transparent)',
-                    borderRadius: '50%',
-                    pointerEvents: 'none',
-                    transform: 'translate(-50%, -50%)'
-                  }}
-                />
               </motion.div>
             )}
           </AnimatePresence>
         </motion.div>
       </motion.div>
-      
-      {/* Sound placeholder comments */}
-      {/*
-        === SOUND/MOOD EFFECTS PLACEHOLDER ===
-        
-        1. Birthday Music Autoplay:
-           const audio = new Audio('/birthday-music.mp3');
-           audio.loop = true;
-           audio.volume = 0.3;
-           audio.play().catch(e => console.log('Autoplay prevented'));
-        
-        2. Confetti Sound on Explosion:
-           const confettiSound = new Audio('/confetti-pop.mp3');
-           confettiSound.volume = 0.2;
-           confettiSound.play();
-        
-        3. Magical Chime on Entrance:
-           const chimeSound = new Audio('/magical-chime.mp3');
-           chimeSound.play();
-        
-        Note: Add these to useEffect for best results.
-      */}
     </div>
   );
-};
-
-// ============================================
-// FLOATING GIFT BOXES
-// ============================================
-const FloatingGiftBoxes = () => {
-  const [openedGifts, setOpenedGifts] = useState({});
-  const gifts = [
-    { id: 1, x: '80%', y: '20%', delay: 0 },
-    { id: 2, x: '10%', y: '60%', delay: 2 },
-    { id: 3, x: '85%', y: '70%', delay: 4 }
-  ];
-  
-  const openGift = (id) => {
-    setOpenedGifts(prev => ({ ...prev, [id]: true }));
-  };
-  
-  return (
-    <>
-      {gifts.map(gift => (
-        <motion.div
-          key={gift.id}
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ delay: gift.delay, type: 'spring' }}
-          style={{
-            position: 'absolute',
-            left: gift.x,
-            top: gift.y,
-            cursor: 'pointer',
-            zIndex: 15,
-            fontSize: '50px'
-          }}
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          onClick={() => openGift(gift.id)}
-        >
-          {!openedGifts[gift.id] ? '🎁' : (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring' }}
-            >
-              🎀✨
-            </motion.div>
-          )}
-        </motion.div>
-      ))}
-    </>
-  );
-};
-
-// ============================================
-// PARALLAX LIGHTS
-// ============================================
-const ParallaxLights = () => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePos({ x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-  
-  return (
-    <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden', pointerEvents: 'none', zIndex: 5 }}>
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={i}
-          animate={{
-            x: mousePos.x * 50 * (i + 1) * -1,
-            y: mousePos.y * 30 * (i + 1) * -1
-          }}
-          transition={{ type: 'spring', stiffness: 50 }}
-          style={{
-            position: 'absolute',
-            left: `${10 + i * 10}%`,
-            top: `${20 + i * 8}%`,
-            width: '150px',
-            height: '150px',
-            background: `radial-gradient(circle, rgba(255,158,207,0.15), rgba(179,136,255,0.05))`,
-            borderRadius: '50%',
-            filter: 'blur(40px)'
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-// ============================================
-// FLOATING HEART LINE
-// ============================================
-const FloatingHeartLine = () => {
-  const hearts = [];
-  for (let i = 0; i < 20; i++) {
-    hearts.push(
-      <motion.div
-        key={i}
-        initial={{ x: `${i * 5}%`, y: '100vh', opacity: 0 }}
-        animate={{
-          y: '-20vh',
-          opacity: [0, 1, 1, 0],
-          x: [`${i * 5}%`, `${i * 5 + (Math.random() - 0.5) * 20}%`]
-        }}
-        transition={{
-          duration: 5 + Math.random() * 3,
-          delay: i * 0.3,
-          repeat: Infinity,
-          ease: 'easeOut'
-        }}
-        style={{
-          position: 'absolute',
-          fontSize: '24px',
-          pointerEvents: 'none',
-          zIndex: 12
-        }}
-      >
-        {['❤️', '💜', '💖', '💗', '💓'][i % 5]}
-      </motion.div>
-    );
-  }
-  return <>{hearts}</>;
 };
 
 export default FinalCelebration;

@@ -70,12 +70,11 @@ const MiniGame = ({ onFinish }) => {
   };
 
   const getFeedbackMessage = () => {
-    if (score >= 10) return "🌟 LEGENDARY PLAYER 🌟";
-    if (score >= 7) return "✨ Amazing Reflexes ✨";
-    if (score >= 4) return "🍰 Nice Try!";
-    return "🎂 Keep going!";
-  };
-
+  if (score >= 10) return "💜 Irraj approved: Elite Reflex Master!";
+  if (score >= 7) return "✨ That was seriously impressive!";
+  if (score >= 4) return "🍰 Not bad! You're getting there!";
+  return "🎂 Keep trying… magic takes practice 💜";
+};
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 
   // GAME OVER SCREEN
