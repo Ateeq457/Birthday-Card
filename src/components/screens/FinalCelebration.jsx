@@ -694,7 +694,7 @@ const FinalCelebration = ({ onReplay }) => {
                     lineHeight: 1.4
                   }}
                 >
-                  You made it through the magical journey! 🎉
+                  Stay consistent, stay kind, and keep moving forward — good things will follow you, Irraj ✨
                 </motion.p>
               </motion.div>
             )}
